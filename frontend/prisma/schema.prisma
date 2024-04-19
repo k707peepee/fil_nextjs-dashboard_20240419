@@ -1,0 +1,76 @@
+// 定义生成器，用于生成 Prisma 客户端  
+generator client {  
+  // 生成器的提供商，这里生成的是 JavaScript 客户端  
+  provider = "prisma-client-js"  
+  binaryTargets = ["native", "windows"]
+} 
+
+// 定义数据源，指定数据库类型和连接URL  
+datasource db {  
+  // 数据库提供商，这里使用 PostgreSQL  
+  provider = "postgresql"  
+  // 数据库连接URL，通常从环境变量中获取，以确保敏感信息不被硬编码在代码中  
+  // url      = env("POSTGRES_URL")  
+  url = env("DATABASE_URL")
+}  
+  
+// 定义 FilBlock 模型，代表数据库中的 fil_blocks 表  
+model FilBlock {  
+  id Int @id @default(autoincrement())
+  rewardNodeId String
+  blockTime DateTime @default(now())
+  isOurNode Boolean @default(false)
+  blockHeight Int
+@@map("fil_blocks")
+}
+
+// 定义 Summary模型，代表数据库中的 summary 表
+model Summary {  
+  id            Int        @id @default(autoincrement())  
+  blockHeight   Int
+  hashRate      Float
+  trade         Float  
+  liquidity     Float  
+  @@map("summary") 
+}
+
+
+// 定义 SectorDetails 模型 (扇区详单)
+model SectorDetails {
+  id              Int      @id @default(autoincrement())
+  node_id         String
+  sectorid        Float
+  expiration_date Float
+  expire30        Float
+  deals           String
+  updatedate      DateTime  @default(now())
+  @@map("f_sector_details")
+}
+
+
+// 定义 SectorSummary 模型 (扇区统计)
+model SectorSummary {
+  id            Int      @id @default(autoincrement())
+  node_id       String
+  sector_sum    Float
+  expiration_sum Float    
+  updatedate    DateTime @default(now())
+  @@map("f_sector_summary")
+}
+
+model f_node_stats {  
+  id                       Int      @id @default(autoincrement()) @map("id")  
+  node_id                  String  
+  power                    Decimal  
+  owner_balance            Decimal  
+  miner_balance            Decimal
+  pledge_balance           Decimal  
+  power_change_7_days      Decimal  
+  power_change_10_days     Decimal  
+  power_change_ratio_7_days Decimal  
+  power_change_ratio_10_days Decimal  
+  lucky_value_7_days       Decimal  
+  lucky_value_30_days      Decimal  
+  date                     DateTime @map("date")  
+  @@map("f_node_stats")
+}
